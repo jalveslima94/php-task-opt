@@ -4,15 +4,13 @@ define('ROOT', __DIR__);
 require_once(ROOT . '/utils/NewsManager.php');
 require_once(ROOT . '/utils/CommentManager.php');
 
-foreach (NewsManager::getInstance()->listNews() as $news) {
-	echo("############ NEWS " . $news->getTitle() . " ############\n");
-	echo($news->getBody() . "\n");
-	foreach (CommentManager::getInstance()->listComments() as $comment) {
-		if ($comment->getNewsId() == $news->getId()) {
-			echo("Comment " . $comment->getId() . " : " . $comment->getBody() . "\n");
-		}
-	}
-}
-
+$newsManager = NewsManager::getInstance();
 $commentManager = CommentManager::getInstance();
-$c = $commentManager->listComments();
+
+foreach ($newsManager->listNews() as $news) {
+    echo "############ NEWS " . htmlspecialchars($news->getTitle()) . " ############\n";
+    echo htmlspecialchars($news->getBody()) . "\n";
+    foreach ($commentManager->listCommentsByNewsId($news->getId()) as $comment) {
+        echo "Comment " . htmlspecialchars($comment->getId()) . " : " . htmlspecialchars($comment->getBody()) . "\n";
+    }
+}
